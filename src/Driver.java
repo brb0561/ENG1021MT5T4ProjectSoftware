@@ -34,7 +34,6 @@ public class Driver {
         Pin waterPump  = arduino.getPin(waterPumPin);
 
         Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
-        double waterLevelValue = WaterLevelSensorRun.readWaterLevel(waterLevelSensor);
         arduino.addEventListener(new buttonDetector(button,waterPump));
     }
 /*
