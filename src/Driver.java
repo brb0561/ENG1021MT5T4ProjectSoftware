@@ -32,9 +32,12 @@ public class Driver {
         } catch (Exception e) {
             System.out.println("unable to connect to board");
         }
+        Pin button = arduino.getPin(buttonPin);
+        Pin waterPump  = arduino.getPin(waterPumPin);
+
         Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
         long readWaterLevelValue  = WaterLevelSensor.run(waterLevelSensor);
-
+        arduino.addEventListener(new buttonDetector(button,waterPump));
     }
 /*
 Goes off if the detected water level is lower than required
