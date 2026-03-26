@@ -5,13 +5,11 @@ Created by:
 Date Modified:2/3/2026
  */
 
-import org.firmata4j.I2CDevice;
 import org.firmata4j.Pin;
 import org.firmata4j.firmata.FirmataDevice;
-import org.firmata4j.ssd1306.SSD1306;
 
 import java.io.IOException;
-import java.util.Timer;
+
 public class Driver {
     /*
     Method Name:Main
@@ -36,7 +34,7 @@ public class Driver {
         Pin waterPump  = arduino.getPin(waterPumPin);
 
         Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
-        long readWaterLevelValue  = WaterLevelSensor.run(waterLevelSensor);
+        double waterLevelValue = WaterLevelSensorRun.readWaterLevel(waterLevelSensor);
         arduino.addEventListener(new buttonDetector(button,waterPump));
     }
 /*
