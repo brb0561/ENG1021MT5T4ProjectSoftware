@@ -18,8 +18,7 @@ public class Driver {
     About:The main driver
      */
     public static void main(String[] args) throws IOException {
-        final int co2sensorPin = 16;//A2
-        final int moistureSensorPin = 14;//A0
+        final int waterLevelSensorPin = 14;//A0
         final int waterPumPin = 7; //D7
         final int buttonPin = 6;//D6
 
@@ -31,6 +30,9 @@ public class Driver {
         } catch (Exception e) {
             System.out.println("unable to connect to board");
         }
+        Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
+        WaterLevelSensor.run(waterLevelSensor);
+
     }
 /*
 Goes off if the detected water level is lower than required
