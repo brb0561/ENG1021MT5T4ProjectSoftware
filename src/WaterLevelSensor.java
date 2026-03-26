@@ -1,60 +1,61 @@
-/*
-Modified Code from RobotDinosaurs to accomadate java implementation
- */
+import org.firmata4j.Pin;
+import org.firmata4j.firmata.FirmataDevice;
+import java.io.IOException;
+
 public class WaterLevelSensor {
+    private static final String PORT = "COM3";
+    private static final int SENSOR_POWER = 5;
+    private static final int SENSOR_PIN = 14; // A0 is typically pin 14 on Arduino Uno
 
-    /*
-  WaterLevelSensor
-  Gets a reading from a sensor and outputs the value and percentage of the level of water
-  on a serial monitor.
-*/
-    // Value for storing water level
-    int value = 0;
-    char printBuffer[128];
-    Pin waterLevelSensor =
-    public WaterLevelSensor(){
+    public static void main(String[] args) throws Exception {
+        var device = new FirmataDevice(PORT);
 
-    }
+        try {
+            device.start();
+            device.ensureInitializationIsDone();
 
-    public void setup() {
-        pinMode(sensorPower, OUTPUT);
+            var powerPin = device.getPin(SENSOR_POWER);
+            var analogPin = device.getPin(SENSOR_PIN);
 
-        // Set to LOW so no power flows through the sensor
-        digitalWrite(sensorPower, LOW);
+            // Setup
+            powerPin.setMode(Pin.Mode.OUTPUT);
+            analogPin.setMode(Pin.Mode.ANALOG);
+            powerPin.setValue(0); // Ensure it starts LOW
 
-        Serial.begin(9600);
-    }
+            while (true) {
+                // Turn sensor ON
+                powerPin.setValue(1);
+                Thread.sleep(1000); // Wait 1 second
 
-    public void loop()
-    {
-        digitalWrite(sensorPower, HIGH);  // Turn the sensor ON
-        delay(1000);              // wait 1000 milliseconds
+                // Read value
+                long value = analogPin.getValue();
+                String result = "Value: " + value;
 
-        value = analogRead(sensorPin); // get adc value
-        sprintf(printBuffer, "Value: %d", value);
+                // Calibration logic
+                if (value <= 120) {
+                    result += " = 0%";
+                } else if (value <= 135) {
+                    result += " = 0% - 25%";
+                } else if (value <= 145) {
+                    result += " = 25% - 50%";
+                } else if (value <= 150) {
+                    result += " = 50% - 75%";
+                } else {
+                    result += " = 75% - 100%";
+                }
 
-        //values based on calibration
-        if (value<=120){
-            sprintf(printBuffer+strlen(printBuffer), "= 0%%");
+                System.out.println(result);
+
+                // Turn sensor OFF
+                powerPin.setValue(0);
+
+                // Wait 5 seconds before next loop
+                Thread.sleep(5000);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            device.stop();
         }
-        else if (value>120 && value<=135){
-            sprintf(printBuffer+strlen(printBuffer), "= 0%% - 25%%");
-        }
-        else if (value>135 && value<=145){
-            System.out.printf(printBuffer+strlen(printBuffer), "= 25%% - 50%%");
-        }
-        else if (value>145 && value<=150){
-            sprintf(printBuffer+strlen(printBuffer), "= 50%% - 75%%");
-        }
-        else if (value>150){
-            sprintf(printBuffer+strlen(printBuffer), "= 75%% - 100%%");
-        }
-
-        Serial.println(printBuffer);
-
-        // Do not power the sensor constantly, but power it only when you take the readings.
-        digitalWrite(sensorPower, LOW);   // Turn the sensor OFF
-
-        delay(5000);
     }
 }
