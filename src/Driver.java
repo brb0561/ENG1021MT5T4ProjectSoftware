@@ -9,8 +9,8 @@ public class Driver {
     Method Name:Main
     About:The main driver
      */
-    public static void main(String[] args) {
-
+    public static void main(String[] args) { //yo
+        System.out.println("hello");
     }
     public static void alarm(int interval){
 
