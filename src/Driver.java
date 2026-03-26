@@ -33,7 +33,7 @@ public class Driver {
             System.out.println("unable to connect to board");
         }
         Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
-        WaterLevelSensor.run(waterLevelSensor);
+        long readWaterLevelValue  = WaterLevelSensor.run(waterLevelSensor);
 
     }
 /*
