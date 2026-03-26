@@ -17,12 +17,14 @@ public class Driver {
     Method Name:Main
     About:The main driver
      */
+
+    static final String portNumber = "COM3";
     public static void main(String[] args) throws IOException {
         final int waterLevelSensorPin = 14;//A0
         final int waterPumPin = 7; //D7
         final int buttonPin = 6;//D6
 
-        FirmataDevice arduino = new FirmataDevice("COM3");
+        FirmataDevice arduino = new FirmataDevice(portNumber);
         arduino.start();
         System.out.println("Board Started");
         try {
