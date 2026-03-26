@@ -9,6 +9,7 @@ import org.firmata4j.Pin;
 import org.firmata4j.firmata.FirmataDevice;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Timer;
 
 public class Driver {
@@ -24,6 +25,9 @@ public class Driver {
         final int waterPumPin = 7; //D7
         final int buttonPin = 6;//D6
         final int motorPin = 0;//temporary pin needs to be adjusted for grove board
+
+
+
         FirmataDevice arduino = new FirmataDevice(portNumber);
         arduino.start();
         System.out.println("Board Started");
