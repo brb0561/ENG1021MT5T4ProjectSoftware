@@ -5,8 +5,10 @@ Created by:
 Date Modified:2/3/2026
  */
 
+import org.firmata4j.I2CDevice;
 import org.firmata4j.Pin;
 import org.firmata4j.firmata.FirmataDevice;
+import org.firmata4j.ssd1306.SSD1306;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ public class Driver {
         final int waterPumPin = 7; //D7
         final int buttonPin = 6;//D6
         final int motorPin = 0;//temporary pin needs to be adjusted for grove board
+        final int ledPin = 4;//D4
+        final int buzzerPin = 5;//D5
 
 
 
@@ -41,9 +45,20 @@ public class Driver {
         Pin waterPump  = arduino.getPin(waterPumPin);
         Pin motor = arduino.getPin(motorPin);
         Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
+        Pin led = arduino.getPin(ledPin);
+        Pin buzzer = arduino.getPin(buzzerPin);
+        buzzer.setMode(Pin.Mode.OUTPUT);
+        led.setMode(Pin.Mode.OUTPUT);
         waterLevelSensor.setMode(Pin.Mode.ANALOG);
+        button.setMode(Pin.Mode.INPUT);
+        //add device startups for waterpump and motor
         arduino.addEventListener(new buttonDetector(button,waterPump));//button detection for dispensing food.
-        var cycle = new cycle(waterPump,motor, waterLevelSensor);
+
+        I2CDevice i2cObject = arduino.getI2CDevice((byte) 0x3C);
+        SSD1306 oledDisplay = new SSD1306(i2cObject, SSD1306.Size.SSD1306_128_64);
+        oledDisplay.init();
+
+        var cycle = new cycle(waterPump,motor, waterLevelSensor,led,oledDisplay, buzzer);
         new Timer().schedule(cycle,0,cycleDuration);
     }
 
