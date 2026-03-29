@@ -42,18 +42,10 @@ public class Driver {
         Pin motor = arduino.getPin(motorPin);
         Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
         waterLevelSensor.setMode(Pin.Mode.ANALOG);
-        arduino.addEventListener(new buttonDetector(button,waterPump));
+        arduino.addEventListener(new buttonDetector(button,waterPump));//button detection for dispensing food.
         var cycle = new cycle(waterPump,motor, waterLevelSensor);
         new Timer().schedule(cycle,0,cycleDuration);
     }
-/*
-Goes off if the detected water level is lower than required
- */
-    public static void alarm(int interval){
 
-    }
-    public int weightCalc(){
-        int weight = 0;
-        return weight;
-    }
+
 }

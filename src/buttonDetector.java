@@ -8,6 +8,7 @@ public class buttonDetector implements IODeviceEventListener{
 
 
     //Status:Completed
+    //About:Just detects if the button is pressed or not to dispense food.
 
         private final Pin buttonPin;
         private  final Pin waterPumpPin;
