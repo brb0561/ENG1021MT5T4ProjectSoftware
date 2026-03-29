@@ -18,7 +18,7 @@ public class cycle extends TimerTask {
 
     final String foodTrackFile = "FoodTrack.txt";
     final String timeTextFile = "Time.txt";
-    final double waterThreshold = 30;//needs to be adjusted
+    final double waterThreshold = 2.3;// Threshold voltage value
     final String datePattern = "yyyy-MM-dd HH:mm:ss";
 
     public cycle(Pin waterPump, Pin motor, Pin waterSensor, Pin led, SSD1306 oled, Pin buzzer){
@@ -39,6 +39,19 @@ public class cycle extends TimerTask {
         long startTime;
         double elapsedTime = 0;
         try {
+            double initialCheck = readWaterLevel(this.waterSensor);
+            if (initialCheck < waterThreshold) {
+                System.out.println("Bowl low. Starting Pump...");
+                // Calling readWaterLevel(this.waterSensor) INSIDE the while condition
+                // so it gets a fresh value every time the loop repeats.
+                int safetyCounter = 0;
+                while (readWaterLevel(this.waterSensor) < waterThreshold && safetyCounter < 10) {
+                    this.waterPump.setValue(1); // Keep pump running
+                    Thread.sleep(500);          // Wait half a second
+                    safetyCounter++;            // Prevent infinite pumping
+                }
+                this.waterPump.setValue(0); // SHUT OFF IMMEDIATELY
+            }
 
             startTime = System.currentTimeMillis();
             //add motor spinning code here + time it took.
@@ -64,11 +77,8 @@ public class cycle extends TimerTask {
      */
 
     public static double readWaterLevel(Pin waterLevelSensor) throws IOException, InterruptedException {
-        waterLevelSensor.setValue(1);
-        long waterSensorValue = waterLevelSensor.getValue();
-        Thread.sleep(100);
-        waterLevelSensor.setValue(0);//turns sensor off to prevent corrosion?
-        return ((waterSensorValue/1023.0)*5.0);//converts the given waterLevelSensor value into a readable voltage value
+        long rawValue = waterLevelSensor.getValue();
+        return (rawValue / 1023.0) * 5.0;
     }
     /*
     Name:writeToFood
@@ -112,7 +122,7 @@ public class cycle extends TimerTask {
 
 
         this.oled.clear();
-        this.oled.getCanvas().write("PLEASE REFILL WATER TANK");
+        this.oled.getCanvas().write("PLEASE REFILL THE WATER TANK");
         this.oled.display();
 
         Thread.sleep(100);
