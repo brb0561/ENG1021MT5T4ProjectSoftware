@@ -140,7 +140,5 @@ public class cycle extends TimerTask {
         Thread.sleep(100);
         this.buzzer.setValue(0);
         this.led.setValue(0);
-
-
     }
 }
