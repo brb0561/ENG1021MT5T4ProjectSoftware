@@ -52,18 +52,18 @@ public class cycle extends TimerTask {
             }
 
             // --- WATER BOWL SENSOR --- (WORKS WITH PUMP)
-            double initialCheck = readWaterLevel(this.waterSensor);
+            double initialCheck = readWaterLevel(waterSensor);
             if (initialCheck < waterThreshold) {
                 System.out.println("Bowl low. Starting Pump...");
                 // Calling readWaterLevel(this.waterSensor) INSIDE the while condition
                 // so it gets a fresh value every time the loop repeats.
                 int safetyCounter = 0;
-                while (readWaterLevel(this.waterSensor) < waterThreshold && safetyCounter < 10) {
-                    this.waterPump.setValue(1); // Keep pump running
+                while ((readWaterLevel(waterSensor) < waterThreshold) && safetyCounter < 10) {
+                    waterPump.setValue(1); // Keep pump running
                     Thread.sleep(500);          // Wait half a second
                     safetyCounter++;            // Prevent infinite pumping
                 }
-                this.waterPump.setValue(0); // SHUT OFF IMMEDIATELY
+                waterPump.setValue(0); // SHUT OFF IMMEDIATELY
             }
 
             startTime = System.currentTimeMillis();
