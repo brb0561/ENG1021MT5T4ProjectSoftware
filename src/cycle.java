@@ -9,22 +9,25 @@ import java.util.Date;
 import java.util.TimerTask;
 
 public class cycle extends TimerTask {
+    private final double tankThreshold = 2.3; //
     Pin waterPump;
     Pin motor;
     Pin waterSensor;
     Pin led;
     SSD1306 oled;
     Pin buzzer;
+    Pin tankSensor;
 
     final String foodTrackFile = "FoodTrack.txt";
     final String timeTextFile = "Time.txt";
-    final double waterThreshold = 2.3;// Threshold voltage value
+    final double waterThreshold = 2.5;// Threshold voltage value
     final String datePattern = "yyyy-MM-dd HH:mm:ss";
 
-    public cycle(Pin waterPump, Pin motor, Pin waterSensor, Pin led, SSD1306 oled, Pin buzzer){
+    public cycle(Pin waterPump, Pin motor, Pin waterSensor, Pin tankSensor, Pin led, SSD1306 oled, Pin buzzer){
         this.motor = motor;
         this.waterPump = waterPump;
         this.waterSensor = waterSensor;
+        this.tankSensor = tankSensor;
         this.led = led;
         this.oled = oled;
         this.buzzer =buzzer;
@@ -39,6 +42,16 @@ public class cycle extends TimerTask {
         long startTime;
         double elapsedTime = 0;
         try {
+            // --- TANK LEVEL SENSOR --- (TURNS OFF PUMP AND DISPLAYS ALARM MESSAGE)
+            double tankLevel = readWaterLevel(this.tankSensor);
+            if (tankLevel < tankThreshold) {
+                System.out.println("CRITICAL: Tank Empty. System Locked.");
+                this.waterPump.setValue(0); // Safety: kill pump immediately
+                waterLevelAlarm();          // Trigger your alarm/OLED message
+                return;                     // EXIT the method: nothing below will run
+            }
+
+            // --- WATER BOWL SENSOR --- (WORKS WITH PUMP)
             double initialCheck = readWaterLevel(this.waterSensor);
             if (initialCheck < waterThreshold) {
                 System.out.println("Bowl low. Starting Pump...");
@@ -61,10 +74,6 @@ public class cycle extends TimerTask {
             writeToFood("#amountoffood, needs to be adjusted to a variable", startTime);
 
             //waterLevelCheck needs to be added for owner to know if the container is empty (add a threshold value)
-
-            if (readWaterLevel(this.waterSensor)<waterThreshold){
-                waterLevelAlarm();
-            }
 
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
