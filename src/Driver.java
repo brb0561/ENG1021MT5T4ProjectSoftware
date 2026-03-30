@@ -52,6 +52,10 @@ public class Driver {
         waterLevelSensor.setMode(Pin.Mode.ANALOG);
         button.setMode(Pin.Mode.INPUT);
         //add device startups for waterpump and motor
+        waterPump.setMode(Pin.Mode.OUTPUT); // Allows the pump to receive power
+        // Initial safety: make sure they are OFF at startup
+        waterPump.setValue(0);
+
         arduino.addEventListener(new buttonDetector(button,waterPump));//button detection for dispensing food.
 
         I2CDevice i2cObject = arduino.getI2CDevice((byte) 0x3C);
