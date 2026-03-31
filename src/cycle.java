@@ -11,11 +11,11 @@ import java.util.TimerTask;
 public class cycle extends TimerTask {
     private final double tankThreshold = 2.3; //
     Pin waterPump;
-    Pin motor;
+    Pin servo;
     Pin waterSensor;
     Pin led;
     SSD1306 oled;
-    Pin buzzer;
+    //Pin buzzer;
     Pin tankSensor;
 
     final String foodTrackFile = "FoodTrack.txt";
@@ -23,14 +23,14 @@ public class cycle extends TimerTask {
     final double waterThreshold = 2.5;// Threshold voltage value
     final String datePattern = "yyyy-MM-dd HH:mm:ss";
 
-    public cycle(Pin waterPump, Pin motor, Pin waterSensor, Pin tankSensor, Pin led, SSD1306 oled, Pin buzzer){
-        this.motor = motor;
+    public cycle(Pin waterPump, Pin motor, Pin waterSensor, Pin tankSensor, Pin led, SSD1306 oled){//removed buzzer
+        this.servo = motor;
         this.waterPump = waterPump;
         this.waterSensor = waterSensor;
         this.tankSensor = tankSensor;
         this.led = led;
         this.oled = oled;
-        this.buzzer =buzzer;
+        //this.buzzer =buzzer;
     }
     @Override
     /*
@@ -67,7 +67,17 @@ public class cycle extends TimerTask {
             }
 
             startTime = System.currentTimeMillis();
-            //add motor spinning code here + time it took.
+            // start at 0
+            servo.setValue(0);
+            Thread.sleep(2000);
+
+            for (int i = 0; i < 3; i++) {
+                servo.setValue(180);   // go to 180 degrees
+                Thread.sleep(650);
+
+                servo.setValue(0);     // go back to 0 degrees
+                Thread.sleep(650);
+            }
             //add flowrate of food & time to calculate amount of food dispensed.
             //add amount of food dispensed to txt file using buffered writer.
             double flowRate = 8;//change value accordingly
