@@ -1,0 +1,28 @@
+import org.firmata4j.Pin;
+import org.firmata4j.firmata.FirmataDevice;
+
+public class ServoCycle {
+    public static void main(String[] args) throws Exception {
+
+        FirmataDevice board = new FirmataDevice("COM3");
+        board.start();
+        board.ensureInitializationIsDone();
+
+        Pin servo = board.getPin(5);
+        servo.setMode(Pin.Mode.SERVO);
+
+        // start at 0
+        servo.setValue(0);
+        Thread.sleep(2000);
+
+        for (int i = 0; i < 3; i++) {
+            servo.setValue(180);   // go to 180
+            Thread.sleep(650);
+
+            servo.setValue(0);     // go back to 0
+            Thread.sleep(650);
+        }
+
+        board.stop();
+    }
+}
