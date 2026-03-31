@@ -70,7 +70,9 @@ public class cycle extends TimerTask {
             //add motor spinning code here + time it took.
             //add flowrate of food & time to calculate amount of food dispensed.
             //add amount of food dispensed to txt file using buffered writer.
+            double flowRate = 8;//change value accordingly
             elapsedTime = System.currentTimeMillis() - startTime;//timer to account for the amount of time that water & amount of food is dispensed
+            double amountOfFood = (flowRate*elapsedTime);
             writeToFood("#amountoffood, needs to be adjusted to a variable", startTime);
 
             //waterLevelCheck needs to be added for owner to know if the container is empty (add a threshold value)
@@ -123,22 +125,35 @@ public class cycle extends TimerTask {
  */
     public void waterLevelAlarm() throws IOException, InterruptedException {
 
-        this.buzzer.setValue(1);
         this.led.setValue(1);
         Thread.sleep(100);
-        this.buzzer.setValue(0);
         this.led.setValue(0);
-
+        this.led.setValue(1);
+        Thread.sleep(100);
+        this.led.setValue(0);
+        this.led.setValue(1);
+        Thread.sleep(100);
+        this.led.setValue(0);
+        this.led.setValue(1);
+        Thread.sleep(100);
+        this.led.setValue(0);
 
         this.oled.clear();
         this.oled.getCanvas().write("PLEASE REFILL THE WATER TANK");
         this.oled.display();
 
-        Thread.sleep(100);
-        this.buzzer.setValue(1);
         this.led.setValue(1);
         Thread.sleep(100);
-        this.buzzer.setValue(0);
+        this.led.setValue(0);
+        Thread.sleep(100);
+        this.led.setValue(1);
+        Thread.sleep(100);
+        this.led.setValue(0);
+        this.led.setValue(1);
+        Thread.sleep(100);
+        this.led.setValue(0);
+        this.led.setValue(1);
+        Thread.sleep(100);
         this.led.setValue(0);
     }
 }
