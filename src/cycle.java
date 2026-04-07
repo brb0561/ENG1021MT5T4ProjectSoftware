@@ -15,22 +15,22 @@ public class cycle extends TimerTask {
     Pin waterSensor;
     Pin led;
     SSD1306 oled;
-    //Pin buzzer;
+    Pin buzzer;
     Pin tankSensor;
 
     final String foodTrackFile = "FoodTrack.txt";
     final String timeTextFile = "Time.txt";
-    final double waterThreshold = 2.5;// Threshold voltage value
+    final double waterThreshold = 2.3;// Threshold voltage value
     final String datePattern = "yyyy-MM-dd HH:mm:ss";
 
-    public cycle(Pin waterPump, Pin motor, Pin waterSensor, Pin tankSensor, Pin led, SSD1306 oled){//removed buzzer
+    public cycle(Pin waterPump, Pin motor, Pin waterSensor, Pin tankSensor,Pin buzzer, Pin led, SSD1306 oled){//removed buzzer
         this.servo = motor;
         this.waterPump = waterPump;
         this.waterSensor = waterSensor;
         this.tankSensor = tankSensor;
         this.led = led;
         this.oled = oled;
-        //this.buzzer =buzzer;
+        this.buzzer =buzzer;
     }
     @Override
     /*
@@ -42,7 +42,7 @@ public class cycle extends TimerTask {
         long startTime;
         double elapsedTime = 0;
         try {
-            // --- TANK LEVEL SENSOR --- (TURNS OFF PUMP AND DISPLAYS ALARM MESSAGE)
+            // --- TANK LEVEL SENSOR --- (TURNS OFF PUMP AND DISPLAYS ALARM MESSAGE WHEN TANK IS EMPTY)
             double tankLevel = readWaterLevel(this.tankSensor);
             if (tankLevel < tankThreshold) {
                 System.out.println("CRITICAL: Tank Empty. System Locked.");
@@ -56,6 +56,7 @@ public class cycle extends TimerTask {
             if (initialCheck < waterThreshold) {
                 System.out.println("Bowl low. Starting Pump...");
                 // Calling readWaterLevel(this.waterSensor) INSIDE the while condition
+                // so it gets a fresh value every time the loop repeats.
                 // so it gets a fresh value every time the loop repeats.
                 int safetyCounter = 0;
                 while ((readWaterLevel(waterSensor) < waterThreshold) && safetyCounter < 10) {

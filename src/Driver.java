@@ -27,8 +27,9 @@ public class Driver {
         final int tankSensorPin = 16; //A2
         final int waterPumPin = 7; //D7
         final int buttonPin = 6;//D6
-        final int servoPin = 5;//temporary pin needs to be adjusted for grove board
+        final int servoPin = 3;//temporary pin needs to be adjusted for grove board
         final int ledPin = 4;//D4
+        final int buzzerPin = 5;
 
 
 
@@ -48,8 +49,8 @@ public class Driver {
         Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
         Pin tankSensor = arduino.getPin(tankSensorPin);
         Pin led = arduino.getPin(ledPin);
-        //Pin buzzer = arduino.getPin(buzzerPin);
-       // buzzer.setMode(Pin.Mode.OUTPUT);
+        Pin buzzer = arduino.getPin(buzzerPin);
+        buzzer.setMode(Pin.Mode.OUTPUT);
         led.setMode(Pin.Mode.OUTPUT);
         waterLevelSensor.setMode(Pin.Mode.ANALOG);
         tankSensor.setMode(Pin.Mode.ANALOG);
@@ -65,7 +66,7 @@ public class Driver {
         SSD1306 oledDisplay = new SSD1306(i2cObject, SSD1306.Size.SSD1306_128_64);
         oledDisplay.init();
 
-        var cycle = new cycle(waterPump,servo, waterLevelSensor, tankSensor, led,oledDisplay);
+        var cycle = new cycle(waterPump,servo,waterLevelSensor,tankSensor,buzzer,led,oledDisplay);
         new Timer().schedule(cycle,0,cycleDuration);
     }
 
