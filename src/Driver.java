@@ -26,11 +26,11 @@ public class Driver {
         final int waterLevelSensorPin = 14;//A0
         final int tankSensorPin = 16; //A2
         final int waterPumPin = 7; //D7
-        final int buttonPin = 6;//D6
+        final int waterbuttonPin = 6;//D6
         final int servoPin = 3;//temporary pin needs to be adjusted for grove board
         final int ledPin = 4;//D4
         final int buzzerPin = 5;
-
+        final int foodButtonPin = 2;//D2
 
 
 
@@ -43,24 +43,27 @@ public class Driver {
             System.out.println("unable to connect to board");
         }
         //initialization of pins/devices.
-        Pin button = arduino.getPin(buttonPin);
+        Pin waterButton = arduino.getPin(waterbuttonPin);
         Pin waterPump  = arduino.getPin(waterPumPin);
         Pin servo = arduino.getPin(servoPin);
         Pin waterLevelSensor = arduino.getPin(waterLevelSensorPin);
         Pin tankSensor = arduino.getPin(tankSensorPin);
         Pin led = arduino.getPin(ledPin);
         Pin buzzer = arduino.getPin(buzzerPin);
+        Pin foodButton = arduino.getPin(foodButtonPin);
+        foodButton.setMode(Pin.Mode.INPUT);
         buzzer.setMode(Pin.Mode.OUTPUT);
         led.setMode(Pin.Mode.OUTPUT);
         waterLevelSensor.setMode(Pin.Mode.ANALOG);
         tankSensor.setMode(Pin.Mode.ANALOG);
-        button.setMode(Pin.Mode.INPUT);
+        waterButton.setMode(Pin.Mode.INPUT);
         //add device startups for waterpump (done) and motor (remaining)
         waterPump.setMode(Pin.Mode.OUTPUT); // Allows the pump to receive power
         // Initial safety: make sure waterpump (done) and motor (remaining) are OFF at startup
         waterPump.setValue(0);
 
-        arduino.addEventListener(new buttonDetector(button,waterPump));//button detection for dispensing food.
+        arduino.addEventListener(new buttonDetector(arduino,servo,servo));//button detection for dispensing water.
+
 
         I2CDevice i2cObject = arduino.getI2CDevice((byte) 0x3C);
         SSD1306 oledDisplay = new SSD1306(i2cObject, SSD1306.Size.SSD1306_128_64);

@@ -70,7 +70,7 @@ public class cycle extends TimerTask {
             startTime = System.currentTimeMillis();
             // start at 0
             servo.setValue(0);
-            Thread.sleep(2000);
+            Thread.sleep(5000);
 
             for (int i = 0; i < 3; i++) {
                 servo.setValue(180);   // go to 180 degrees
@@ -80,13 +80,10 @@ public class cycle extends TimerTask {
                 Thread.sleep(650);
             }
             double flowRate = 1.13;//flow rate of food dispensed in grams/s
-
             elapsedTime = System.currentTimeMillis() - startTime;//timer to account for the amount of time that water & amount of food is dispensed
             double amountOfFood = (flowRate*elapsedTime);
             writeToFood(amountOfFood, startTime);//amount of food dispensed to txt file using buffered writer.
-            if(waterThreshold<readWaterLevel(waterSensor)) {
-                waterLevelAlarm();
-            }
+
             //waterLevelCheck needs to be added for owner to know if the container is empty (add a threshold value)
 
         } catch (IOException | InterruptedException e) {
