@@ -84,7 +84,9 @@ public class cycle extends TimerTask {
             elapsedTime = System.currentTimeMillis() - startTime;//timer to account for the amount of time that water & amount of food is dispensed
             double amountOfFood = (flowRate*elapsedTime);
             writeToFood(amountOfFood, startTime);//amount of food dispensed to txt file using buffered writer.
-
+            if(waterThreshold<readWaterLevel(waterSensor)) {
+                waterLevelAlarm();
+            }
             //waterLevelCheck needs to be added for owner to know if the container is empty (add a threshold value)
 
         } catch (IOException | InterruptedException e) {
