@@ -1,4 +1,5 @@
 import org.firmata4j.Pin;
+import org.firmata4j.firmata.FirmataDevice;
 import org.firmata4j.ssd1306.SSD1306;
 
 import java.io.BufferedWriter;
@@ -17,19 +18,22 @@ public class cycle extends TimerTask {
     SSD1306 oled;
     //Pin buzzer;
     Pin tankSensor;
+    FirmataDevice arduino;
+    Pin button;
 
     final String foodTrackFile = "FoodTrack.txt";
     final String timeTextFile = "Time.txt";
     final double waterThreshold = 2.5;// Threshold voltage value
     final String datePattern = "yyyy-MM-dd HH:mm:ss";
 
-    public cycle(Pin waterPump, Pin motor, Pin waterSensor, Pin tankSensor, Pin led, SSD1306 oled){//removed buzzer
+    public cycle(FirmataDevice arduino, Pin button, Pin waterPump, Pin motor, Pin waterSensor, Pin tankSensor, Pin led, SSD1306 oled){//removed buzzer
         this.servo = motor;
         this.waterPump = waterPump;
         this.waterSensor = waterSensor;
         this.tankSensor = tankSensor;
         this.led = led;
         this.oled = oled;
+        this.arduino = arduino;
         //this.buzzer =buzzer;
     }
     @Override
@@ -71,13 +75,7 @@ public class cycle extends TimerTask {
             servo.setValue(0);
             Thread.sleep(2000);
 
-            for (int i = 0; i < 3; i++) {
-                servo.setValue(180);   // go to 180 degrees
-                Thread.sleep(650);
-
-                servo.setValue(0);     // go back to 0 degrees
-                Thread.sleep(650);
-            }
+            arduino.addEventListener(new buttonDetector(button, servo));
             double flowRate = 1.13;//flow rate of food dispensed in grams/s
 
             elapsedTime = System.currentTimeMillis() - startTime;//timer to account for the amount of time that water & amount of food is dispensed
@@ -128,7 +126,7 @@ public class cycle extends TimerTask {
     About:Sets an alarm off for the user to refill water?
     Parameters:
 
-    Status:Incomplete
+    Status:Complete
     Goes off if the detected water level is lower than required
 
  */

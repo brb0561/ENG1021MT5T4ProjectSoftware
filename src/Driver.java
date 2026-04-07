@@ -65,7 +65,7 @@ public class Driver {
         SSD1306 oledDisplay = new SSD1306(i2cObject, SSD1306.Size.SSD1306_128_64);
         oledDisplay.init();
 
-        var cycle = new cycle(waterPump,servo, waterLevelSensor, tankSensor, led,oledDisplay);
+        var cycle = new cycle(arduino, button, waterPump,servo, waterLevelSensor, tankSensor, led,oledDisplay);
         new Timer().schedule(cycle,0,cycleDuration);
     }
 
