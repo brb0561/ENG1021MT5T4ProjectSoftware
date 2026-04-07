@@ -11,26 +11,28 @@ public class buttonDetector implements IODeviceEventListener{
     //About:Just detects if the button is pressed or not to dispense food.
 
         private final Pin buttonPin;
-        private  final Pin waterPumpPin;
+        private  final Pin servo;
         // constructor
-        buttonDetector(Pin buttonPin, Pin waterPump) {
+        buttonDetector(Pin buttonPin, Pin servo) {
             this.buttonPin = buttonPin;
-            this.waterPumpPin = waterPump;
+            this.servo = servo;
 
         }
 
         @Override
         public void onPinChange(IOEvent event) {
-            // Return right away if the even isn't from the Button.
-            if (event.getPin().getIndex() != buttonPin.getIndex()) {
-                return;
-            }
-            try {//ends the water pump from the press of a button.
-                this.waterPumpPin.setValue(0);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            for (int i = 0; i < 3; i++) {
+                try {
+                    servo.setValue(180);   // go to 180 degrees
+                    Thread.sleep(650);
+                    servo.setValue(0);     // go back to 0 degrees
+                    Thread.sleep(650);
 
+                } catch (IOException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
         }
         // These are empty methods (nothing in the curly braces)
         @Override
